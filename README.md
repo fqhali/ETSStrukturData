@@ -113,3 +113,142 @@ int main() {
 ## 4. Diketahui maksimum Queue = 9 elemen dengan kondisi mula-mula Queue kosong. Gambarkan Queue beserta posisi Front dan Rear, jika ada perintah :<br>a. Tambah Angka 19<br>b. Tambah Angka 7<br>c. Hapus 2 Angka<br>d. Tambah Angka 40<br>e. Hapus 3 Angka<br>f. Tambah Angka 18
 
 ![image alt](https://github.com/fqhali/ETSStrukturData/blob/18d101f531c7d7b772016718276318b5d3c537e4/queue.png)
+
+------------
+
+## 5. Studi Kasus: Antrian Layanan Akademik
+
+1. Dalam sistem layanan akademik ini, Queue (antrean) bertindak sebagai ruang tunggu virtual yang menjamin keadilan pelayanan dengan prinsip FIFO (First In, First Out).
+
+    Implementasi FIFO: Mahasiswa yang datang dan mengambil nomor urut paling awal akan dilayani paling pertama. Mahasiswa yang datang belakangan harus menunggu di belakang.
+
+    Enqueue: Proses saat seorang mahasiswa tiba, mengambil nomor antrean, dan namanya dicatat di posisi paling belakang (Rear).
+
+    Dequeue: Proses saat petugas memanggil nomor antrean. Mahasiswa di posisi paling depan (Front) dikeluarkan dari antrean untuk dilayani.
+
+    Front & Rear: Sistem selalu melacak siapa yang sedang berada di loket saat ini (Front) dan siapa mahasiswa terakhir yang baru saja bergabung di barisan (Rear).
+
+2. Algoritma Enqueue dan Dequeue
+
+Algoritma ini mengasumsikan penggunaan antrean berbasis Array dengan batas maksimal tertentu (misal: MAX_ANTREAN).
+
+Algoritma Enqueue (Menambahkan Mahasiswa):
+1. Periksa apakah antrean penuh (Rear == MAX_ANTREAN - 1).
+2. Jika penuh, tampilkan pesan "Antrean penuh" dan proses dihentikan.
+3. Jika antrean masih kosong (Front == -1), ubah Front menjadi 0.
+4. Tambahkan nilai Rear sebanyak 1 (Rear = Rear + 1).
+5. Masukkan nama mahasiswa ke dalam Array pada indeks Rear.
+
+Algoritma Dequeue (Melayani Mahasiswa):
+1. Periksa apakah antrean kosong (Front == -1 atau Front > Rear).
+2. Jika kosong, tampilkan pesan "Tidak ada mahasiswa dalam antrean" dan proses dihentikan.
+3. Ambil data mahasiswa pada indeks Front untuk dilayani.
+4. Tambahkan nilai Front sebanyak 1 (Front = Front + 1) agar mahasiswa berikutnya maju ke depan.****
+<br>
+3. Implementasi Kode
+
+```cpp
+#include <iostream>
+#include <string>
+#define MAX 10
+
+using namespace std;
+
+class LayananAkademik {
+private:
+    int front;
+    int rear;
+    string antrian[MAX];
+
+public:
+    LayananAkademik() {
+        front = -1;
+        rear = -1;
+    }
+
+    void enqueue(string nama) {
+        if (rear == MAX - 1) {
+            cout << "[Sistem] Antrian Penuh!\n";
+            return;
+        }
+        if (front == -1) {
+            front = 0;
+        }
+        rear++;
+        antrian[rear] = nama;
+        cout << "[Sistem] Mahasiswa " << nama << " mengambil nomor antrian.\n";
+    }
+
+    void dequeue() {
+        if (front == -1 || front > rear) {
+            cout << "[Sistem] Antrian kosong, tidak ada yang dilayani.\n";
+            return;
+        }
+        cout << "[Petugas] Melayani mahasiswa: " << antrian[front] << "\n";
+        front++;
+    }
+
+    void tampilkanAntrian() {
+        if (front == -1 || front > rear) {
+            cout << "[Info] Antrian saat ini KOSONG.\n";
+            return;
+        }
+        cout << "[Info] Kondisi Antrian Saat Ini:\n";
+        cout << "Front -> ";
+        for (int i = front; i <= rear; i++) {
+            cout << "[" << antrian[i] << "] ";
+        }
+        cout << "<- Rear\n";
+    }
+};
+
+int main() {
+    LayananAkademik sistem;
+
+    cout << "=== SIMULASI LAYANAN AKADEMIK ===\n\n";
+
+    sistem.enqueue("Mahasiswa A");
+    sistem.enqueue("Mahasiswa B");
+    sistem.enqueue("Mahasiswa C");
+    
+    cout << "\n";
+    sistem.tampilkanAntrian();
+    cout << "\n";
+
+    sistem.dequeue();
+    
+    cout << "\n";
+    sistem.tampilkanAntrian();
+    cout << "\n";
+
+    sistem.enqueue("Mahasiswa D");
+    
+    cout << "\n";
+    sistem.tampilkanAntrian();
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== SIMULASI LAYANAN AKADEMIK ===
+
+[Sistem] Mahasiswa Mahasiswa A mengambil nomor antrian.
+[Sistem] Mahasiswa Mahasiswa B mengambil nomor antrian.
+[Sistem] Mahasiswa Mahasiswa C mengambil nomor antrian.
+
+[Info] Kondisi Antrian Saat Ini:
+Front -> [Mahasiswa A] [Mahasiswa B] [Mahasiswa C] <- Rear
+
+[Petugas] Melayani mahasiswa: Mahasiswa A
+
+[Info] Kondisi Antrian Saat Ini:
+Front -> [Mahasiswa B] [Mahasiswa C] <- Rear
+
+[Sistem] Mahasiswa Mahasiswa D mengambil nomor antrian.
+
+[Info] Kondisi Antrian Saat Ini:
+Front -> [Mahasiswa B] [Mahasiswa C] [Mahasiswa D] <- Rear
+```
